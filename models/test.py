@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @python: 3.6
+
+import torch
+from torch import nn
+import numpy as np
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def test_img(net_g, datatest, args):
+    net_g.eval()
+    # testing
+    test_loss = 0
+    correct = 0
+    # print("lenn"+str(len(datatest)))
+    # idxs = np.arange(10000)
+    # labels = datatest.test_labels.numpy()
+    # print(labels[0])
+    # idxs_labels = np.vstack((idxs, labels))
+    # idxs_labels = idxs_labels[:, idxs_labels[1, :].argsort()]
+    # #idxs = idxs_labels[0, :]  # 标签从大到小
+    # idxs_0_5 = idxs_labels[0,0:5000]
+    # datatest_0_5 = []
+    # for i in idxs_0_5:
+    #     datatest_0_5.append(datatest[i])
+    # datatest = datatest_0_5
+
+
+
+    data_loader = DataLoader(datatest, batch_size=args.bs)
+    l = len(data_loader)
+    for idx, (data, target) in enumerate(data_loader):
+        if args.gpu != -1:
+            data, target = data.to(device), target.to(device)
+        log_probs = net_g(data)
+        # sum up batch loss
+        test_loss += F.cross_entropy(log_probs, target, reduction='sum').item()
+        # get the index of the max log-probability
+        y_pred = log_probs.data.max(1, keepdim=True)[1]
+        correct += y_pred.eq(target.data.view_as(y_pred)).long().cpu().sum()
+
+    test_loss /= len(data_loader.dataset)
+    accuracy = 100.00 * correct / len(data_loader.dataset)
+    if args.verbose:
+        print('\nTest set: Average loss: {:.4f} \nAccuracy: {}/{} ({:.2f}%)\n'.format(
+            test_loss, correct, len(data_loader.dataset), accuracy))
+    return accuracy, test_loss
+
