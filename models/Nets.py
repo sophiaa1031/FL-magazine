@@ -78,7 +78,7 @@ class CNN_FEMNIST(nn.Module):
         self.fc1y = nn.Linear(12 * 4 * 4, 120)
         self.fc2y = nn.Linear(120, 100)
 
-        self.fc3 = nn.Linear(100, args.num_classes)
+        self.fc3 = nn.Linear(200, args.num_classes)
 
         self.weight_keys = [['fc1x.weight', 'fc1x.bias'],
                             ['fc2x.weight', 'fc2x.bias'],

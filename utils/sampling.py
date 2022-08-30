@@ -37,11 +37,11 @@ def mnist_noniid(dataset, num_users):
     :param num_users:
     :return:
     """
-    print("non_iid:" + str(len(dataset)))
-    num_shards, num_imgs = 200, 300
+    # print("non_iid:" + str(len(dataset)))
+    num_shards, num_imgs = 600, 100
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([], dtype='int64') for i in range(num_users)}
-    print(dict_users)
+    # print(dict_users)
     idxs = np.arange(num_shards * num_imgs)
     labels = dataset.train_labels.numpy()
 
@@ -50,7 +50,7 @@ def mnist_noniid(dataset, num_users):
     idxs_labels = idxs_labels[:, idxs_labels[1, :].argsort()]
     idxs = idxs_labels[0, :]  # 标签从大到小
 
-    num_items_noniid = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
+    num_items_noniid = [3,3,3,3,3, 4,4,4,4,4, 5,5,5,5,5, 6,6,6,6,6]
     # divide and assign
     for i in range(num_users):
         rand_set = set(np.random.choice(idx_shard, num_items_noniid[i], replace=False))

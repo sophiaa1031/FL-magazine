@@ -25,7 +25,7 @@ class DatasetSplit(Dataset):
 
 
 class LocalUpdate(object):
-    def __init__(self, args, dataset=None, idxs=None, epc=5):
+    def __init__(self, args, dataset=None, idxs=None, epc=1):
         self.args = args
         self.loss_func = nn.CrossEntropyLoss()
         self.selected_clients = []
@@ -38,7 +38,7 @@ class LocalUpdate(object):
         # train and update
         optimizer = torch.optim.SGD(net.parameters(), lr=self.args.lr, momentum=self.args.momentum)
         epoch_loss = []
-        for iter in range(5):
+        for iter in range(self.args.local_ep):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.ldr_train):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)
